@@ -21,6 +21,8 @@ target 'HelloAnimation' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'HelloAnimationTests' do
     inherit! :complete
     # Pods for testing
