@@ -1,114 +1,44 @@
 import * as React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Animated, { interpolate, interpolateNode,  } from "react-native-reanimated";
-import { MaterialTopTabBarProps } from "@react-navigation/material-top-tabs/lib/typescript/src/types";
+import { useEffect } from "react";
+import { View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSpring,
+  withTiming
+} from "react-native-reanimated";
 
-function MyTabBar({ state, descriptors, navigation, position } : MaterialTopTabBarProps) {
-  return (
-    <View style={{ flexDirection: "row", paddingTop: 20 }}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-              ? options.title
-              : route.name;
 
-        const isFocused = state.index === index;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: "tabPress",
-            target: route.key
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key
-          });
-        };
-        // // modify inputRange for custom behavior
-        // const inputRange = state.routes.map((_, i) => i);
-        //
-        // console.log(position);
-        // // console.log(inputRange);
-        //
-        //
-        // // const opacity = interpolate(position, inputRange, inputRange.map((i: number) => (i === index ? 1 : 0)));
-        // const opacity = interpolateNode(position, {
-        //   inputRange,
-        //   outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-        // });
-        // console.log("opacity", opacity);
-
-        const inputRange = state.routes.map((_, i) => i);
-        const opacity = Animated.interpolateNode(position, {
-          inputRange,
-          outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-        });
-
-        return (
-          <TouchableOpacity
-            key={route.name}
-            accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={{ flex: 1 }}
-          >
-            <Animated.Text style={{ opacity }}>{label}</Animated.Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-}
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-const Tab = createMaterialTopTabNavigator();
+const handlerRotation = (progress: Animated.SharedValue<number>) => {
+  'worklet';
+  return `${progress.value * 360}rad`;
+};
 
 export default function App() {
+
+  const progress = useSharedValue(0.2);
+  const scale = useSharedValue(1);
+
+  const reanimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }, { rotate: handlerRotation(progress) }],
+      opacity: progress.value,
+      borderRadius: (progress.value * 100) / 2
+    };
+  });
+
+  useEffect(() => {
+    progress.value = withRepeat(withTiming(1), 3, true);
+    scale.value = withRepeat(withSpring(2), 3, true);
+  }, []);
+
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Animated.View style={[{ width: 100, height: 100, backgroundColor: "green" }, reanimatedStyle]}>
+
+      </Animated.View>
+    </View>
   );
 }
