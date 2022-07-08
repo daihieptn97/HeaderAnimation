@@ -1,41 +1,47 @@
-import * as React from "react";
-import { Dimensions, View } from "react-native";
-import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "react-native-gesture-handler";
-import Page from "./src/Page";
+import React from "react";
+import Style1 from "./src/Style1";
+import { createStackNavigator } from "@react-navigation/stack";
+import Style2 from "./src/Style2";
+import { StatusBar, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import StackShareAnimation from "./src/ShareElement/StackShareAnimation";
 
-type ContextType = {
-  translateX: number;
-  translateY: number;
+const Stack = createStackNavigator();
+
+function Main() {
+
+    const navigation = useNavigation<any>();
+
+
+    const styles: ViewStyle = {
+        padding: 14,
+        backgroundColor: "#06c572",
+        margin: 14,
+        paddingHorizontal: 20,
+        borderRadius: 12
+    };
+
+    return <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <StatusBar backgroundColor="transparent" barStyle={"dark-content"} translucent={true} />
+        <TouchableOpacity style={styles} onPress={() => navigation.navigate("style1")}>
+            <Text>Style 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles} onPress={() => navigation.navigate("style2")}>
+            <Text>Style 2</Text>
+        </TouchableOpacity>
+    </View>;
 }
 
-const WIDTH = Dimensions.get("window").width;
-
-const SIZE = 100;
-const SIZE_CIRCLE = WIDTH - 28;
-
-const LIST_TITLE = ["Hello", "World", "React Native", "Reanimated", "Gesture Handler", "Hiep"];
-
 export default function App() {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown : false}}>
+                <Stack.Screen name="style1" component={Style1} />
+                <Stack.Screen name="StackShareAnimation" component={StackShareAnimation} />
+                <Stack.Screen name="main" component={Main} />
+                <Stack.Screen name="style2" component={Style2} />
+            </Stack.Navigator>
+        </NavigationContainer>
 
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-
-  const onGestureEvent = useAnimatedScrollHandler((e) => {
-    translateX.value = e.contentOffset.x;
-  });
-
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Animated.ScrollView onScroll={onGestureEvent} pagingEnabled={true} horizontal={true}
-                             showsHorizontalScrollIndicator={false}>
-          {LIST_TITLE.map((title, index) => {
-            return <Page index={index} title={title} translateX={translateX} key={index.toString()} />;
-          })}
-        </Animated.ScrollView>
-      </View>
-    </GestureHandlerRootView>
-  );
+    );
 }
