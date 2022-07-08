@@ -155,7 +155,7 @@ function Home() {
     </View>;
 }
 
-function ItemMenu() {
+export function ItemMenu() {
     return <View style={{
         width: "80%", alignSelf: "center", alignItems: "center",
         shadowColor: "#000",

@@ -1,13 +1,14 @@
 import * as React from "react";
 import { Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs/lib/typescript/src/types";
 
 import { useAnimatedStyle } from "react-native-reanimated";
 import ItemBottomBar from "./ItemBottomBar";
 import Home from "./Home";
-import ItemBottomBarNewStyle from "./ItemBottomBarNewStyle";
+import { ifIphoneX } from "react-native-iphone-x-helper";
+import StackShareAnimation from "./ShareElement/StackShareAnimation";
+import StackShareElement2Animation from "./ShareElement2/ShareElement2.Stack";
 
 function HomeScreen() {
     return (
@@ -46,7 +47,11 @@ function MyTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps)
     });
 
     return (
-        <View style={{ flexDirection: "row", height: 60, backgroundColor: "white" }}>
+        <View style={{
+            flexDirection: "row",
+            backgroundColor: "white",
+            ...ifIphoneX({ paddingBottom: 25, height: 60 + 20 }, { paddingBottom: 0, height: 60 })
+        }}>
             {state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
                 const label =
@@ -98,10 +103,10 @@ const Tab = createBottomTabNavigator();
 export default function Style2() {
     return (
         <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />} screenOptions={{ headerShown: false }}>
-            <Tab.Screen name={KEY_HOME} component={HomeScreen} />
+            <Tab.Screen name={KEY_FIND} component={StackShareAnimation} />
+            <Tab.Screen name={KEY_HOME} component={StackShareElement2Animation} />
             <Tab.Screen name={KEY_CHAT} component={Home} />
             <Tab.Screen name={KEY_ADD} component={SettingsScreen} />
-            <Tab.Screen name={KEY_FIND} component={SettingsScreen} />
             <Tab.Screen name={KEY_SETTING} component={SettingsScreen} />
         </Tab.Navigator>
     );

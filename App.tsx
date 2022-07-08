@@ -36,10 +36,10 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown : false}}>
+                <Stack.Screen name="style2" component={Style2} />
                 <Stack.Screen name="style1" component={Style1} />
                 <Stack.Screen name="StackShareAnimation" component={StackShareAnimation} />
                 <Stack.Screen name="main" component={Main} />
-                <Stack.Screen name="style2" component={Style2} />
             </Stack.Navigator>
         </NavigationContainer>
 

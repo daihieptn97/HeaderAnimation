@@ -6,6 +6,7 @@ import { useAnimatedStyle } from "react-native-reanimated";
 import Home from "./Home";
 import ItemBottomBarNewStyle from "./ItemBottomBarNewStyle";
 import StackShareAnimation from "./ShareElement/StackShareAnimation";
+import { ifIphoneX } from "react-native-iphone-x-helper";
 
 function HomeScreen() {
     return (
@@ -44,7 +45,11 @@ function MyTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps)
     });
 
     return (
-        <View style={{ flexDirection: "row", height: 60, backgroundColor: "white" }}>
+        <View style={{
+            flexDirection: "row",
+            backgroundColor: "white",
+            ...ifIphoneX({ paddingBottom: 30, height: 90 }, { paddingBottom: 0, height: 60 })
+        }}>
             {state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
                 const label =
@@ -101,6 +106,7 @@ function MyTabBar({ state, descriptors, navigation, insets }: BottomTabBarProps)
 
 const Tab = createBottomTabNavigator();
 
+
 export default function Style1() {
     return (
         <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />} screenOptions={{ headerShown: false }}>
@@ -110,7 +116,6 @@ export default function Style1() {
             <Tab.Screen name={KEY_ADD} component={SettingsScreen} />
             <Tab.Screen name={KEY_SETTING} component={SettingsScreen} />
         </Tab.Navigator>
-
     );
 }
 
